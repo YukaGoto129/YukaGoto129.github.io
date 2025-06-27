@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ログイン</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen font-sans text-gray-800">
+
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-4 text-center text-gray-900">パスワード認証</h2>
+        <p class="text-gray-600 mb-6 text-center">パスワードを入力してください</p>
+        <input id="password-input" type="password" placeholder="パスワード" class="w-full p-3 border rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button id="login-btn" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors">ログイン</button>
+        <p id="error-message" class="text-red-500 text-center mt-4 hidden">パスワードが間違っています</p>
+    </div>
+
+    <script>
+        document.getElementById('login-btn').addEventListener('click', async () => {
+            const password = document.getElementById('password-input').value;
+
+            const correctHash = '5d0386a843e89ee6c7154dc6aaac9a7747d94d3fe53d3fbfc8c73c66b827b5b0'; 
+
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+            if (hashHex === correctHash) {
+                window.location.href = 'login.html';
+            } else {
+                document.getElementById('error-message').classList.remove('hidden');
+            }
+        });
+    </script>
+
+</body>
+</html>
